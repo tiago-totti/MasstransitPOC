@@ -6,5 +6,8 @@
         int DebitAccount { get; }
         decimal Value { get; }
         string PaymentType { get; set; }
+
+        string CreatedBy { get; set; }
+
     }
 }

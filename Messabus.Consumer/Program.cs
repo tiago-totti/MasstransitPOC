@@ -1,6 +1,6 @@
-﻿using MassTransit;
+﻿using GreenPipes;
+using MassTransit;
 using MassTransit.RabbitMqTransport;
-using GreenPipes;
 using System;
 
 namespace Messabus.Consumer
@@ -27,22 +27,26 @@ namespace Messabus.Consumer
 
                 rabbit.ReceiveEndpoint(rabbitMqHost, "superdigital.payments.orderpayments", conf =>
                 {
-                    conf.UseRetry(retryConfig => {
+                    conf.UseRetry(retryConfig =>
+                    {
                         retryConfig.Immediate(5);
                         retryConfig.Handle<Exception>();
                     });
-                       
-                    conf.Consumer<CreatePaymentConsumer>(consumerConfig => 
+
+                    conf.Consumer<CreatePaymentConsumer>(consumerConfig =>
                     {
-                        
-                        consumerConfig.UseRetry(retryConfig => {
+
+                        consumerConfig.UseRetry(retryConfig =>
+                        {
                             retryConfig.Immediate(5);
                             retryConfig.Ignore<ArgumentNullException>();
                         });
-                     
+
                     });
                 });
             });
+
+
 
             rabbitBusControl.Start();
             Console.ReadKey();

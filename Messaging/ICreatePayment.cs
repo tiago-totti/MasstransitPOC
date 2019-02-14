@@ -8,5 +8,6 @@ namespace Messaging
         int DebitAccount { get; }
         decimal Value { get; }
         string PaymentType { get; set; }
+
     }
 }

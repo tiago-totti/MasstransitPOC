@@ -1,18 +1,19 @@
-﻿using GreenPipes;
-using MassTransit;
+﻿using MassTransit;
+using MessageBus.Consumer.ResumeAccount;
+using System;
+using GreenPipes;
 using MassTransit.RabbitMqTransport;
 using Messaging;
-using System;
 using System.Threading.Tasks;
 
-namespace MessageBus.Consumer.ResumeAccount
+namespace MessageBus.Consumer.DisplayAccount
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.Title = "Consumer Resume Account";
-            Console.WriteLine("Consumer Resume Account");
+            Console.Title = "Consumer Display Account";
+            Console.WriteLine("Consumer Display Account");
 
             RunMessageBuss();
         }
@@ -27,22 +28,21 @@ namespace MessageBus.Consumer.ResumeAccount
                     settings.Username("guest");
                 });
 
-                rabbit.ReceiveEndpoint(rabbitMqHost, "superdigital.payments.events.resumeaccount", conf =>
+                rabbit.ReceiveEndpoint(rabbitMqHost, "superdigital.payments.events.displayAccount", conf =>
                 {
                     conf.PrefetchCount = 1;
                     conf.Consumer<PaymentCreatedConsumer>(paymentCreatedConfig =>
                     {
                         paymentCreatedConfig.UseContextFilter((context) =>
-                       {
-                           bool valid = context.TryGetMessage<IPaymentCreated>(out var message);
-                           if (valid)
-                           {
-                               valid = message.Message?.CreatedBy == "wololo";
-                               Console.WriteLine("Skipped message " + context.MessageId);
-                           }
+                        {
+                            bool valid = context.TryGetMessage<IPaymentCreated>(out var message);
+                            if (valid)
+                            {
+                                valid = message.Message?.CreatedBy == "CreatePayment";
+                            }
 
-                           return Task.FromResult(valid);
-                       });
+                            return Task.FromResult(valid);
+                        });
                     });
                 });
             });

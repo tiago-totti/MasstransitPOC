@@ -17,12 +17,16 @@ namespace Messabus.Consumer
                 $"Value {payment.Value}, " +
                 $"Payment Type {payment.PaymentType}");
 
+            
+
+
             context.Publish<IPaymentCreated>(new
             {
                 CreditAccount = payment.CreditAccount,
                 DebitAccount = payment.DebitAccount,
                 Value = payment.Value,
-                PaymentType = payment.PaymentType
+                PaymentType = payment.PaymentType,
+                CreatedBy = "CreatePayment",
             });
 
             return Task.FromResult(context);

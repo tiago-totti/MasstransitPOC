@@ -32,14 +32,20 @@ namespace MessageBus
             Task<ISendEndpoint> sendEndpointTask = rabbitBusControl.GetSendEndpoint(new Uri(string.Concat(rabbitMqAddress, "/", rabbitMqQueue)));
             ISendEndpoint sendEndpoint = sendEndpointTask.Result;
 
-            Task sendTask = sendEndpoint.Send<ICreatePayment>(new
-            {
-                CreditAccount = 5587,
-                DebitAccount = 6698,
-                Value = 580.75,
-                PaymentType = "Salary"
-            });
 
+            for (int i = 0; i < 100; i++)
+            {
+                Task sendTask = sendEndpoint.Send<ICreatePayment>(new
+                {
+                    CreditAccount = 5587,
+                    DebitAccount = 6698,
+                    Value = i + 580,
+                    PaymentType = "Salary"
+                });
+
+                sendTask.Wait();
+                Console.WriteLine("Mensagem {0} enviada", i);
+            }
             Console.ReadKey();
         }
     }
